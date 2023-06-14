@@ -1,11 +1,83 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    
-    
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#FF9800"
+        android:text="RESET" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/resetButton"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#FF9800"
+        android:text="SAVE" />
+
+    <Button
+        android:id="@+id/loadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/saveButton"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#FF9800"
+        android:text="LOAD" />
+
+    <Button
+        android:id="@+id/circleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loadButton"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FF9800"
+        android:text="Circle" />
+
+    <Button
+        android:id="@+id/squareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loadButton"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/circleButton"
+        android:backgroundTint="#FF9800"
+        android:text="Square" />
+
+    <Button
+        android:id="@+id/triangleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loadButton"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/squareButton"
+        android:backgroundTint="#FF9800"
+        android:text="Triangle" />
+
+    <Button
+        android:id="@+id/pointButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loadButton"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/triangleButton"
+        android:backgroundTint="#FF9800"
+        android:text="Point" />
+
+    <cv.um.poo.design.DesignView
+        android:id="@+id/designView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/circleButton"
+        android:layout_marginTop="-208dp"
+        android:background="#000000"
+        android:backgroundTint="#000000" />
+
+</RelativeLayout>
