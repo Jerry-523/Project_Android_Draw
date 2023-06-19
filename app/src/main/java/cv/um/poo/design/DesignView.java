@@ -13,23 +13,19 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import cv.um.poo.design.Figure;
-
 public class DesignView extends View {
 
     private List<Figure> figures;
     private Figure currentFigure;
-    private FigureType currentFigureType;
-
-    private enum FigureType {
-        CIRCLE, SQUARE, TRIANGLE, POINT
-    }
+    private boolean resizing;
+    private float scaleFactor;
 
     public DesignView(Context context, AttributeSet attrs) {
         super(context, attrs);
         figures = new ArrayList<>();
         currentFigure = null;
-        currentFigureType = null;
+        resizing = false;
+        scaleFactor = 1.0f;
     }
 
     public void setFigures(List<Figure> figures) {
@@ -37,8 +33,9 @@ public class DesignView extends View {
         invalidate();
     }
 
-    public void setCurrentFigureType(FigureType figureType) {
-        currentFigureType = figureType;
+    public void setScaleFactor(float scaleFactor) {
+        this.scaleFactor = scaleFactor;
+        invalidate();
     }
 
     @Override
@@ -59,6 +56,7 @@ public class DesignView extends View {
                 for (int i = 1; i < points.size(); i++) {
                     path.lineTo(points.get(i).x, points.get(i).y);
                 }
+                path.close();
                 canvas.drawPath(path, paint);
             }
         }
@@ -72,8 +70,25 @@ public class DesignView extends View {
                 for (int i = 1; i < points.size(); i++) {
                     path.lineTo(points.get(i).x, points.get(i).y);
                 }
+                path.close();
                 canvas.drawPath(path, paint);
             }
+        }
+
+        // Desenhar retângulo de redimensionamento
+        if (resizing && currentFigure != null && currentFigure.getPoints().size() == 2) {
+            float startX = currentFigure.getPoints().get(0).x;
+            float startY = currentFigure.getPoints().get(0).y;
+            float endX = currentFigure.getPoints().get(1).x;
+            float endY = currentFigure.getPoints().get(1).y;
+
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.LTGRAY);
+            canvas.drawRect(startX, startY, endX, endY, paint);
+
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.BLACK);
+            canvas.drawRect(startX, startY, endX, endY, paint);
         }
     }
 
@@ -84,17 +99,31 @@ public class DesignView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                currentFigure = new Figure();
-                currentFigure.addPoint(new PointF(x, y));
+                if (!resizing) {
+                    currentFigure = new Figure();
+                    currentFigure.addPoint(new PointF(x, y));
+                    resizing = true;
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
-                currentFigure.addPoint(new PointF(x, y));
-                invalidate();
+                if (resizing && currentFigure != null && currentFigure.getPoints().size() == 1) {
+                    float startX = currentFigure.getPoints().get(0).x;
+                    float startY = currentFigure.getPoints().get(0).y;
+                    float width = x - startX;
+                    float height = y - startY;
+
+                    currentFigure.addPoint(new PointF(startX + width, startY + height));
+
+                    invalidate();
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                figures.add(currentFigure);
-                currentFigure = null;
-                invalidate();
+                if (resizing && currentFigure != null && currentFigure.getPoints().size() == 2) {
+                    figures.add(currentFigure);
+                    currentFigure = null;
+                    resizing = false;
+                    invalidate();
+                }
                 break;
         }
 
@@ -102,65 +131,38 @@ public class DesignView extends View {
     }
 
     public void generateCircle() {
-        setCurrentFigureType(FigureType.CIRCLE);
-        figures.add(generateFigure(FigureType.CIRCLE));
-        invalidate();
+        if (!resizing) {
+            currentFigure = new Circle();
+            currentFigure.addPoint(new PointF());
+            resizing = true;
+            invalidate();
+        }
     }
 
     public void generateSquare() {
-        setCurrentFigureType(FigureType.SQUARE);
-        figures.add(generateFigure(FigureType.SQUARE));
-        invalidate();
+        if (!resizing) {
+            currentFigure = new Square();
+            currentFigure.addPoint(new PointF());
+            resizing = true;
+            invalidate();
+        }
     }
 
     public void generateTriangle() {
-        setCurrentFigureType(FigureType.TRIANGLE);
-        figures.add(generateFigure(FigureType.TRIANGLE));
-        invalidate();
+        if (!resizing) {
+            currentFigure = new Triangle();
+            currentFigure.addPoint(new PointF());
+            resizing = true;
+            invalidate();
+        }
     }
 
     public void generatePoint() {
-        setCurrentFigureType(FigureType.POINT);
-        figures.add(generateFigure(FigureType.POINT));
-        invalidate();
-    }
-
-    // Lógica para gerar as coordenadas do ponto, círculo, quadrado ou triângulo
-    // Adicione a lógica adequada aqui
-    private Figure generateFigure(FigureType figureType) {
-        Figure figure = new Figure();
-        float centerX = getWidth() / 2;
-        float centerY = getHeight() / 2;
-        float radius = Math.min(getWidth(), getHeight()) / 4;
-
-        switch (figureType) {
-            case POINT:
-                figure.addPoint(new PointF(centerX, centerY));
-                break;
-            case CIRCLE:
-                int numPoints = 360;
-                for (int i = 0; i < numPoints; i++) {
-                    float angle = (float) (i * 2 * Math.PI / numPoints);
-                    float x = centerX + radius * (float) Math.cos(angle);
-                    float y = centerY + radius * (float) Math.sin(angle);
-                    figure.addPoint(new PointF(x, y));
-                }
-                break;
-            case SQUARE:
-                figure.addPoint(new PointF(centerX - radius, centerY - radius));
-                figure.addPoint(new PointF(centerX + radius, centerY - radius));
-                figure.addPoint(new PointF(centerX + radius, centerY + radius));
-                figure.addPoint(new PointF(centerX - radius, centerY + radius));
-                figure.addPoint(new PointF(centerX - radius, centerY - radius));
-                break;
-            case TRIANGLE:
-                figure.addPoint(new PointF(centerX, centerY - radius));
-                figure.addPoint(new PointF(centerX + radius, centerY + radius));
-                figure.addPoint(new PointF(centerX - radius, centerY + radius));
-                figure.addPoint(new PointF(centerX, centerY - radius));
-                break;
+        if (!resizing) {
+            currentFigure = new Point();
+            currentFigure.addPoint(new PointF());
+            resizing = true;
+            invalidate();
         }
-
-        return figure;
     }
 }
