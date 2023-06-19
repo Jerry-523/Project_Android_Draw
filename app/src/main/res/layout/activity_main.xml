@@ -77,7 +77,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/circleButton"
         android:layout_marginTop="-208dp"
-        android:background="#000000"
-        android:backgroundTint="#000000" />
+        android:background="@color/white"
+        android:backgroundTint="@color/white" />
 
 </RelativeLayout>

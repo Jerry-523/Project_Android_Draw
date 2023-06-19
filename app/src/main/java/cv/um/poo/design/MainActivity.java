@@ -6,12 +6,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,51 +85,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveFigures() {
-        try {
-            FileOutputStream fileOutputStream = openFileOutput("design.txt", MODE_PRIVATE);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-
-            // Escreve o número de figuras na primeira linha
-            outputStreamWriter.write(figures.size() + "\n");
-
-            // Escreve as características de cada figura nas linhas subsequentes
-            for (Figure figure : figures) {
-                outputStreamWriter.write(figure.toString() + "\n");
-            }
-
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Implemente o código para salvar as figuras, se necessário
     }
 
     private void loadFigures() {
-        try {
-            FileInputStream fileInputStream = openFileInput("design.txt");
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            String line = bufferedReader.readLine();
-
-            if (line != null) {
-                int numFigures = Integer.parseInt(line);
-
-                figures.clear();
-
-                for (int i = 0; i < numFigures; i++) {
-                    line = bufferedReader.readLine();
-                    Figure figure = Figure.fromString(line);
-                    if (figure != null) {
-                        figures.add(figure);
-                    }
-                }
-
-                designView.setFigures(figures);
-            }
-
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Implemente o código para carregar as figuras, se necessário
     }
 }
