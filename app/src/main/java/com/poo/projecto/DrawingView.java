@@ -4,20 +4,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 public class DrawingView extends View {
 
     private Paint paint;
-    private List<Shape> shapes;
-    private Path currentPath;
+    private LinkedList<Shape> shapes;
     private PointF startPoint;
     private ShapeType currentShape;
     private Shape currentDrawingShape;
@@ -34,9 +31,8 @@ public class DrawingView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
 
-        shapes = new ArrayList<>();
-        currentPath = new Path();
-        currentShape = ShapeType.FREE_DRAW;
+        shapes = new LinkedList<>();
+        currentShape = ShapeType.LINE;
     }
 
     @Override
@@ -45,10 +41,6 @@ public class DrawingView extends View {
 
         for (Shape shape : shapes) {
             shape.draw(canvas);
-        }
-
-        if (currentShape == ShapeType.FREE_DRAW) {
-            canvas.drawPath(currentPath, paint);
         }
 
         if (currentDrawingShape != null) {
@@ -64,28 +56,15 @@ public class DrawingView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startPoint = new PointF(x, y);
-                if (currentShape == ShapeType.FREE_DRAW) {
-                    currentPath.moveTo(x, y);
-                } else {
-                    createShape(x, y);
-                }
+                createShape(x, y);
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (currentShape == ShapeType.FREE_DRAW) {
-                    currentPath.lineTo(x, y);
-                } else {
-                    resizeShape(x, y);
-                }
+                resizeShape(x, y);
                 break;
             case MotionEvent.ACTION_UP:
-                if (currentShape == ShapeType.FREE_DRAW) {
-                    shapes.add(new FreeDraw(currentPath, paint));
-                    currentPath.reset();
-                } else {
-                    resizeShape(x, y);
-                    shapes.add(currentDrawingShape);
-                    currentDrawingShape = null;
-                }
+                resizeShape(x, y);
+                shapes.add(currentDrawingShape);
+                currentDrawingShape = null;
                 break;
         }
 
@@ -94,18 +73,18 @@ public class DrawingView extends View {
     }
 
     private void createShape(float endPointX, float endPointY) {
-        float width = endPointX - startPoint.x;
-        float height = endPointY - startPoint.y;
-
         switch (currentShape) {
             case CIRCLE:
                 currentDrawingShape = new Circle(startPoint, 0, paint);
                 break;
             case RECTANGLE:
-                currentDrawingShape = new Rectangle(startPoint, width, height, paint);
+                currentDrawingShape = new Rectangle(startPoint, endPointX, endPointY, paint);
                 break;
-            case TRIANGLE:
-                currentDrawingShape = new Triangle(startPoint, width, height, paint);
+            case LINE:
+                currentDrawingShape = new Line(startPoint, new PointF(endPointX, endPointY), paint);
+                break;
+            case PIXEL:
+                currentDrawingShape = new Pixel(startPoint, paint);
                 break;
         }
     }
@@ -122,10 +101,17 @@ public class DrawingView extends View {
 
     public void clear() {
         shapes.clear();
-        currentPath.reset();
+        invalidate();
+    }
+
+    public LinkedList<Shape> getShapes() {
+        return shapes;
+    }
+
+    public void setShapes(LinkedList<Shape> shapes) {
+        this.shapes = shapes;
         invalidate();
     }
 }
-
 
 
