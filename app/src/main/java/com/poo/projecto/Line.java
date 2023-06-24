@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 
+import java.util.List;
+
 public class Line extends Shape {
     private PointF startPoint;
     private PointF endPoint;
@@ -28,5 +30,15 @@ public class Line extends Shape {
     public void resize(PointF startPoint, float endPointX, float endPointY) {
         this.startPoint = startPoint;
         this.endPoint = new PointF(endPointX, endPointY);
+    }
+
+    @Override
+    public char getType() {
+        return 0;
+    }
+
+    @Override
+    public List<Coordinate> getCoordinates() {
+        return null;
     }
 }

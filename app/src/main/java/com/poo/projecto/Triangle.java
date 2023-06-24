@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 
+import java.util.List;
+
 public class Triangle extends Shape {
     private Path path;
     private Paint paint;
@@ -31,6 +33,16 @@ public class Triangle extends Shape {
         path.lineTo(endPointX, startPoint.y);
         path.lineTo((startPoint.x + endPointX) / 2, endPointY);
         path.close();
+    }
+
+    @Override
+    public char getType() {
+        return 0;
+    }
+
+    @Override
+    public List<Coordinate> getCoordinates() {
+        return null;
     }
 }
 
