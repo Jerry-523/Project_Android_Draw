@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import java.util.List;
+
 public class Circle extends Shape {
     private PointF center;
     private float radius;
@@ -28,6 +30,16 @@ public class Circle extends Shape {
         float newRadius = (float) Math.sqrt(dx * dx + dy * dy);
 
         radius = newRadius;
+    }
+
+    @Override
+    public char getType() {
+        return 0;
+    }
+
+    @Override
+    public List<Coordinate> getCoordinates() {
+        return null;
     }
 }
 

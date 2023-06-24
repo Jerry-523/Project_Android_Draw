@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import java.util.List;
+
 public class Rectangle extends Shape {
     private RectF rect;
     private Paint paint;
@@ -32,6 +34,16 @@ public class Rectangle extends Shape {
         float bottom = Math.max(startPoint.y, endPointY);
 
         rect.set(left, top, right, bottom);
+    }
+
+    @Override
+    public char getType() {
+        return 0;
+    }
+
+    @Override
+    public List<Coordinate> getCoordinates() {
+        return null;
     }
 }
 
